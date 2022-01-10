@@ -13,23 +13,63 @@ public class RollerAgent : Agent {
     }
 
     public Transform Target;
+    public Transform smallTarget;
+
+    private bool _touchedSmaller = false;
+
+
     public override void OnEpisodeBegin() {
         // If the Agent fell, zero its momentum
         if (this.transform.localPosition.y < 0) {
-            this.rBody.angularVelocity = Vector3.zero;
-            this.rBody.velocity = Vector3.zero;
-            this.transform.localPosition = new Vector3(0, 0.5f, 0);
+            //this.rBody.angularVelocity = Vector3.zero;
+            //this.rBody.velocity = Vector3.zero;
+            //this.transform.localPosition = new Vector3(0, 0.5f, 0);
         }
+
+        this.transform.localPosition = new Vector3(Random.value * 8 - 4,
+                                           0.5f,
+                                           Random.value * 8 - 4);
+        this.rBody.angularVelocity = Vector3.zero;
+
+        this.rBody.velocity = Vector3.zero;
+
 
         // Move the target to a new spot
         Target.localPosition = new Vector3(Random.value * 8 - 4,
                                            0.5f,
                                            Random.value * 8 - 4);
+
+
+        while (Vector3.Distance(this.transform.localPosition, Target.localPosition) < 3) {
+            Target.localPosition = new Vector3(Random.value * 8 - 4,
+                                               0.25f,
+                                               Random.value * 8 - 4);
+        }
+
+
+        smallTarget.gameObject.SetActive(true);
+        _touchedSmaller = false;
+
+
+        smallTarget.localPosition = new Vector3(Random.value * 8 - 4,
+                                           0.25f,
+                                           Random.value * 8 - 4);
+
+        while (Vector3.Distance(Target.localPosition, smallTarget.localPosition) < 3 || Vector3.Distance(this.transform.localPosition, smallTarget.localPosition) < 3) {
+            smallTarget.localPosition = new Vector3(Random.value * 8 - 4,
+                                               0.25f,
+                                               Random.value * 8 - 4);
+        }
+
+
+
+
     }
 
     public override void CollectObservations(VectorSensor sensor) {
         // Target and Agent positions
         sensor.AddObservation(Target.localPosition);
+        sensor.AddObservation(smallTarget.localPosition);
         sensor.AddObservation(this.transform.localPosition);
 
         // Agent velocity
@@ -48,16 +88,70 @@ public class RollerAgent : Agent {
         // Rewards
         float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
 
-        // Reached target
+        if (!_touchedSmaller) {
+
+            float distanceToSmallerTarget = Vector3.Distance(this.transform.localPosition, smallTarget.localPosition);
+
+
+            if (distanceToSmallerTarget < 1.0f) {
+                AddReward(1f);
+                smallTarget.gameObject.SetActive(false);
+                _touchedSmaller = true;
+            }
+
+        }
+
+
+        if (_touchedSmaller) {
+            //print(distanceToTarget);
+            AddReward(.001f / distanceToTarget);
+
+            //if (distanceToTarget < 5f) {
+            //    AddReward(.0001f);
+            //    //AddReward(1f / MaxStep);
+            //} else if (distanceToTarget < 4f) {
+            //    //AddReward(2f / MaxStep);
+            //    AddReward(.001f);
+
+            //} else if (distanceToTarget < 3f) {
+            //    //AddReward(3f / MaxStep);
+            //    AddReward(.01f);
+
+            //} else if (distanceToTarget < 2f) {
+            //    //AddReward(4f / MaxStep);
+            //    AddReward(.1f);
+
+            //}
+
+        }
+
+
         if (distanceToTarget < 1.42f) {
-            SetReward(1.0f);
+            if (_touchedSmaller) {
+                AddReward(2f);
+
+            } else {
+                //AddReward(-0.01f);
+                AddReward(-.25f);
+            }
             EndEpisode();
         }
 
-        // Fell off platform
-        else if (this.transform.localPosition.y < 0) {
+        if (this.transform.localPosition.y < 0) {
+
+            //if (_touchedSmaller) {
+            //    SetReward(-0.25f);
+            //} else {
+            //    SetReward(-0.1f);
+            //}
+            AddReward(-.25f);
             EndEpisode();
         }
+
+        //print(MaxStep.ToString());
+
+        //// Penalty given each step to encourage agent to finish task quickly.
+        AddReward(-1f / MaxStep);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut) {
