@@ -133,14 +133,14 @@ PrefabInstance:
     - target: {fileID: 3075560460254773716, guid: 5022079529df0c04ebe1e06fc4de3226, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 29201d98d6c7cea4fa481b1aa5de1eae, type: 3}
+      objectReference: {fileID: 5022602860645237092, guid: ddd55356174159d45a8b2a999f83b169, type: 3}
     - target: {fileID: 3075560460254773716, guid: 5022079529df0c04ebe1e06fc4de3226, type: 3}
       propertyPath: m_BehaviorType
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3075560460254773716, guid: 5022079529df0c04ebe1e06fc4de3226, type: 3}
       propertyPath: m_BrainParameters.VectorObservationSize
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3075560460266822562, guid: 5022079529df0c04ebe1e06fc4de3226, type: 3}
       propertyPath: m_Name

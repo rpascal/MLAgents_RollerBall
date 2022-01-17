@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 11
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -156,7 +156,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 29201d98d6c7cea4fa481b1aa5de1eae, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: ddd55356174159d45a8b2a999f83b169, type: 3}
   m_InferenceDevice: 3
   m_BehaviorType: 0
   m_BehaviorName: RollerBall

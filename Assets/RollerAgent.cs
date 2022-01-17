@@ -21,17 +21,17 @@ public class RollerAgent : Agent {
     public override void OnEpisodeBegin() {
         // If the Agent fell, zero its momentum
         if (this.transform.localPosition.y < 0) {
-            //this.rBody.angularVelocity = Vector3.zero;
-            //this.rBody.velocity = Vector3.zero;
-            //this.transform.localPosition = new Vector3(0, 0.5f, 0);
+            this.rBody.angularVelocity = Vector3.zero;
+            this.rBody.velocity = Vector3.zero;
+            this.transform.localPosition = new Vector3(0, 0.5f, 0);
         }
 
-        this.transform.localPosition = new Vector3(Random.value * 8 - 4,
-                                           0.5f,
-                                           Random.value * 8 - 4);
-        this.rBody.angularVelocity = Vector3.zero;
+        //this.transform.localPosition = new Vector3(Random.value * 8 - 4,
+        //                                   0.5f,
+        //                                   Random.value * 8 - 4);
+        //this.rBody.angularVelocity = Vector3.zero;
 
-        this.rBody.velocity = Vector3.zero;
+        //this.rBody.velocity = Vector3.zero;
 
 
         // Move the target to a new spot
@@ -75,6 +75,10 @@ public class RollerAgent : Agent {
         // Agent velocity
         sensor.AddObservation(rBody.velocity.x);
         sensor.AddObservation(rBody.velocity.z);
+
+        sensor.AddObservation(_touchedSmaller);
+        //sensor.AddObservation(Vector3.Distance(this.transform.localPosition, .localPosition));
+        //sensor.AddObservation(Vector3.Distance(this.transform.localPosition, smallTarget.localPosition));
     }
 
     public float forceMultiplier = 10;
@@ -103,36 +107,17 @@ public class RollerAgent : Agent {
 
 
         if (_touchedSmaller) {
-            //print(distanceToTarget);
             AddReward(.001f / distanceToTarget);
-
-            //if (distanceToTarget < 5f) {
-            //    AddReward(.0001f);
-            //    //AddReward(1f / MaxStep);
-            //} else if (distanceToTarget < 4f) {
-            //    //AddReward(2f / MaxStep);
-            //    AddReward(.001f);
-
-            //} else if (distanceToTarget < 3f) {
-            //    //AddReward(3f / MaxStep);
-            //    AddReward(.01f);
-
-            //} else if (distanceToTarget < 2f) {
-            //    //AddReward(4f / MaxStep);
-            //    AddReward(.1f);
-
-            //}
-
         }
 
 
         if (distanceToTarget < 1.42f) {
             if (_touchedSmaller) {
-                AddReward(2f);
+                AddReward(1f);
 
             } else {
                 //AddReward(-0.01f);
-                AddReward(-.25f);
+                AddReward(-1f);
             }
             EndEpisode();
         }
